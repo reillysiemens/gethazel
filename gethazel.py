@@ -8,13 +8,13 @@ import requests
 
 BLOG = 'thingsonhazelshead.tumblr.com'
 API_URL = 'https://api.tumblr.com/v2/blog'
-HAZEL_DIR = os.path.join(gettempdir(), 'hazel')
+BLOG_DIR = os.path.join(gettempdir(), BLOG)
 
 
 def get_image(url):
     img = requests.get(url, stream=True)
     if img.status_code == 200:
-        file_path = os.path.join(HAZEL_DIR, url.split('/')[-1])
+        file_path = os.path.join(BLOG_DIR, url.split('/')[-1])
         with open(file_path, 'wb') as f:
             img.raw.decode_content = True
             shutil.copyfileobj(img.raw, f)
@@ -22,9 +22,8 @@ def get_image(url):
 
 def main():
 
-    # We're gonna need this directory to download our Hazels.
-    if not os.path.exists(HAZEL_DIR):
-        os.makedirs(HAZEL_DIR)
+    if not os.path.exists(BLOG_DIR):
+        os.makedirs(BLOG_DIR)
 
     info_url = "{}/{}/info".format(API_URL, BLOG)
     info = requests.get(info_url).json()
