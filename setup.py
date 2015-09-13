@@ -16,8 +16,6 @@ setup(
     keywords='Corgi Hazel Balance',
     py_modules=['gethazel'],
     install_requires=[
-        'beautifulsoup4',
-        'lxml',
         'requests',
     ],
     entry_points={
