@@ -3,11 +3,21 @@
 import os
 import shutil
 from tempfile import gettempdir
+from multiprocessing import Pool, cpu_count
 import requests
 
 BLOG = 'thingsonhazelshead.tumblr.com'
 API_URL = 'https://api.tumblr.com/v2/blog'
 HAZEL_DIR = os.path.join(gettempdir(), 'hazel')
+
+
+def get_image(url):
+    img = requests.get(url, stream=True)
+    if img.status_code == 200:
+        file_path = os.path.join(HAZEL_DIR, url.split('/')[-1])
+        with open(file_path, 'wb') as f:
+            img.raw.decode_content = True
+            shutil.copyfileobj(img.raw, f)
 
 
 def main():
@@ -31,13 +41,8 @@ def main():
     image_posts = [p for p in posts if 'photos' in p.keys()]
     urls = [p['photos'][0]['original_size']['url'] for p in image_posts]
 
-    for url in urls:
-        img = requests.get(url, stream=True)
-        if img.status_code == 200:
-            file_path = os.path.join(HAZEL_DIR, url.split('/')[-1])
-            with open(file_path, 'wb') as f:
-                img.raw.decode_content = True
-                shutil.copyfileobj(img.raw, f)
+    with Pool(cpu_count()) as p:
+        p.map(get_image, urls)
 
 if __name__ == '__main__':
     main()
