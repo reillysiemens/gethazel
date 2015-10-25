@@ -8,6 +8,7 @@ import requests
 
 BLOG = 'thingsonhazelshead.tumblr.com'
 API_URL = 'https://api.tumblr.com/v2/blog'
+API_KEY = os.environ['GETHAZEL_API_KEY']
 BLOG_DIR = os.path.join(gettempdir(), BLOG)
 
 
@@ -25,14 +26,15 @@ def main():
     if not os.path.exists(BLOG_DIR):
         os.makedirs(BLOG_DIR)
 
-    info_url = "{}/{}/info".format(API_URL, BLOG)
+    info_url = "{}/{}/info?api_key={}".format(API_URL, BLOG, API_KEY)
     info = requests.get(info_url).json()
     num_posts = int(info['response']['blog']['posts'])
     posts = []
     offset = 0
 
     while not offset >= num_posts:
-        posts_url = "{}/{}/posts?offset={}".format(API_URL, BLOG, offset)
+        posts_url = "{}/{}/posts?offset={}&api_key={}".format(API_URL, BLOG,
+                                                              offset, API_KEY)
         req = requests.get(posts_url).json()
         posts.extend(req['response']['posts'])
         offset += 20
