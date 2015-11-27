@@ -27,7 +27,7 @@ setup(
     install_requires=requires,
     entry_points={
         'console_scripts': [
-            'gethazel=gethazel:main',
+            'gethazel=gethazel.__main__:main',
         ]
     },
 )
