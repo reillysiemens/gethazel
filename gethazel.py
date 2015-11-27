@@ -13,6 +13,14 @@ BLOG_DIR = os.path.join(gettempdir(), BLOG)
 
 
 def get_image(url):
+    """Download an image at a given url.
+
+    Args:
+        url (str): A URL string.
+
+    Returns:
+        None
+    """
     img = requests.get(url, stream=True)
     if img.status_code == 200:
         file_path = os.path.join(BLOG_DIR, url.split('/')[-1])
@@ -22,6 +30,14 @@ def get_image(url):
 
 
 def main():
+    """Main function.
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
 
     if not os.path.exists(BLOG_DIR):
         os.makedirs(BLOG_DIR)
